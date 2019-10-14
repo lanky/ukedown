@@ -1,0 +1,8 @@
+*.sw[op]
+*.patch
+*.py[oc]
+
+# build artifacts
+dist/*
+build/*
+*egg-info
