@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="ukedown-ssears",
+    name="ukedown-lanky",
     version="1.0.0",
     author="Stuart Sears",
     author_email="stuart@sjsears.com",
