@@ -258,19 +258,49 @@ class CollapseChildProcessor(Treeprocessor):
 
 
 class UkeBookExtension(Extension):
-    def extendMarkdown(self, md, md_globals):
+    def __init__(self, **kwargs):
+        """
+        initialiser, sets config (parameters), runs parent init.
+        """
+        self.config = {
+                'header_pattern': [ patterns.HEADER, 'regular expression matching header elements' ],
+                'inline_element': [ 'span', 'HTML element for inline items'],
+                'chord_pattern' : [ patterns.CHORD, 'regular expression matching chords'],
+                'vox_pattern'   : [ patterns.VOX, 'regular expression matching backing vocals'],
+                'notes_pattern' : [ patterns.NOTES, 'regular expression matching notes/instructions']
+                }
+        super().__init__(**kwargs)
+
+    def extendMarkdown(self, md):
+        """
+        Adds our custom processors to the current markdown instance
+
+        Args:
+            md: markdown instance
+        """
         # add our extensions...
-        # preprocessor
-        md.preprocessors.add('junk_cleaner', JunkCleaner(md), '_begin')
-        md.preprocessors.add('headers', HeaderProcessor(md, patterns.HEADER), '<reference')
-        md.inlinePatterns.add('section_header', TagPattern(patterns.HEADER, md, 'span', cls='section_header'), '<reference')
-        md.inlinePatterns.add('chord', TagPattern(patterns.CHORD, md, 'span', cls='chord'), '<reference')
+        # processors are now executed in descending priority order,
+        # md.preprocessors.add('junk_cleaner', JunkCleaner(md), '_begin')
+        # currently the first preprocessor has prio 30, we should run first.
+        # set an absurdly high priority in case other extensions get in the way
+        md.preprocessors.register(JunkCleaner(md), 'junk_cleaner', 100)
+        md.preprocessors.register(HeaderProcessor(md, self.getConfig('header_patterns')), 'headers', 11)
+		#  inlinePatterns.register(EscapeInlineProcessor(ESCAPE_RE, md), 'escape', 180)
+        md.inlinePatterns.register(TagPattern(patterns.HEADER, md, 'span', cls='section_header'), 'section_header', 179)
+        md.inlinePatterns.register(TagPattern(patterns.CHORD, md, 'span', cls='chord'), 'chord', 178)
+        md.inlinePatterns.register(TagPattern(patterns.VOX, md, 'span', cls='vox'), 'vox', 177 )
+        md.inlinePatterns.register(TagPattern(patterns.NOTES, md, 'span', cls='notes'), 'notes', 176)
+
         # add our 'other stuff in brackets' pattern AFTER chord processing
-        # md.inlinePatterns.add('vox', VoxPattern(patterns.VOX, md), '>chord')
-        md.inlinePatterns.add('vox', TagPattern(patterns.VOX, md, 'span', cls='vox'), '>chord')
-        md.inlinePatterns.add('notes', TagPattern(patterns.NOTES, md, 'span', cls='notes'), '>vox')
-        md.parser.blockprocessors.add('box', BoxSectionProcessor(md.parser), '>empty')
-        md.treeprocessors.add('collapsediv', CollapseChildProcessor(md), '<inline')
+        # md.inlinePatterns.register('vox', VoxPattern(patterns.VOX, md), '>chord')
+		# block processors
+        # md.parser.blockprocessors.register(BoxSectionProcessor(md.parser), 'box', '>empty')
+        # parser.blockprocessors.register(EmptyBlockProcessor(parser), 'empty', 100)
+        md.parser.blockprocessors.register(BoxSectionProcessor(md.parser), 'box', 95)
+
+		# tree processors
+        # treeprocessors.register(InlineProcessor(md), 'inline', 20)
+        md.treeprocessors.register(CollapseChildProcessor(md), 'collapsediv', 15)
 
 def makeExtension(*args, **kwargs):
     return UkeBookExtension(*args, **kwargs)
