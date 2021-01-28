@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from markdown import Extension
-from markdown.util import etree
+import xml.etree.ElementTree as etree
 from markdown.preprocessors import Preprocessor
 from markdown.blockprocessors import BlockProcessor
 from markdown.inlinepatterns import Pattern
