@@ -6,7 +6,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name="ukedown-lanky",
-    version="1.0.0",
+    version="2.0.0",
     author="Stuart Sears",
     author_email="stuart@sjsears.com",
     description="markdown extensions to simplify ukulele songsheet generation",
@@ -22,6 +22,6 @@ setuptools.setup(
     ],
     python_requires='>=3.6',
     install_requires=[
-        'markdown'
+        'markdown>=3'
     ],
 )
