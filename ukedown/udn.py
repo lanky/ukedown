@@ -17,37 +17,28 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import re
+import xml.etree.ElementTree as etree
+
 from markdown import Extension
-from markdown.util import etree
 from markdown.preprocessors import Preprocessor
 from markdown.blockprocessors import BlockProcessor
 from markdown.inlinepatterns import Pattern
 from markdown.treeprocessors import Treeprocessor
 
-
-import codecs
-import re
-
-# from glob import glob
-
 # local imports
 from . import patterns
 from . import translations
 
-# constants
-
-# TODO
-# preprocess - replace [ ] with h2
-# replace line 1 ( or the first blank line ) with h1
-# presuming that it only consists of alnum¸space and hyphen (or n-dash or em-dash, bloody unicode)
 
 class JunkCleaner(Preprocessor):
     """
     just cleans up and returns unicode - essentially strips out the 'smart' characters wordprocessors like to
     use in place of good old proper text. Mostly hyphens and quote characters.
     """
+
     def run(self, lines):
-        return [ line.translate(translations.UNICODE_CLEAN_TABLE) for line in lines ]
+        return [line.translate(translations.UNICODE_CLEAN_TABLE) for line in lines]
 
 
 class HeaderProcessor(Preprocessor):
@@ -55,6 +46,7 @@ class HeaderProcessor(Preprocessor):
     assume first non-blank line is the song title (plus potentially artist)
     find and replace [] entries, replace with h2 (i.e. ##)
     """
+
     def __init__(self, markdown_instance=None, pattern=patterns.HEADER):
         super(HeaderProcessor, self).__init__(markdown_instance)
         self.pattern = re.compile(pattern)
@@ -66,59 +58,54 @@ class HeaderProcessor(Preprocessor):
             x = lines.pop(0)
 
             # if it's not blank, then this is what we want
-            if x.strip() != '':
+            if x.strip() != "":
                 # append it flagged as h1 - remove any existing leading '#' symbols
-                new_lines.append('# %s' % x.lstrip('#'))
+                new_lines.append("# %s" % x.lstrip("#"))
                 break
         new_lines.extend(lines)
 
-#         # now iterate over the rest and find [ header ] sections
-#         for line in lines:
-#             # does the line match our [ ] pattern?
-#             m = self.pattern.match(line)
-#             if m:
-#                 if m.group(1).strip().startswith('|'):
-#                     new_lines.append("| ## %s" % m.group(2).strip())
-#                 else:
-#                     new_lines.append("## %s" % m.group(2).strip())
-#             else:
-#                 new_lines.append(line)
         return new_lines
+
 
 class SectionHeader(Pattern):
     def handleMatch(self, m):
-        el = etree.Element('span')
-        el.attrib['class'] = 'section_header'
+        el = etree.Element("span")
+        el.attrib["class"] = "section_header"
         el.text = m.group(2)
         return el
+
 
 class ChordPattern(Pattern):
     def handleMatch(self, m):
-        el = etree.Element('span')
-        el.attrib['class'] =  'chord'
+        el = etree.Element("span")
+        el.attrib["class"] = "chord"
         el.text = m.group(2)
         return el
+
 
 class VoxPattern(Pattern):
     def handleMatch(self, m):
-        el = etree.Element('span')
-        el.set('class', 'vox')
+        el = etree.Element("span")
+        el.set("class", "vox")
         el.text = m.group(2)
         return el
 
+
 class NotesPattern(Pattern):
     def handleMatch(self, m):
-        el = etree.Element('span')
-        el.set('class', 'notes')
+        el = etree.Element("span")
+        el.set("class", "notes")
         el.text = m.group(2)
         return el
+
 
 class TagPattern(Pattern):
     """
     wrapper class around pattern replacement
     sets additional attrs, allows us to use the same 'factory' for each pattern
     """
-    def __init__(self, pattern, markdown_instance=None, tag='span', **attrib):
+
+    def __init__(self, pattern, markdown_instance=None, tag="span", **attrib):
         super(TagPattern, self).__init__(pattern, markdown_instance)
         self.tag = tag
         self.attrib = attrib
@@ -127,8 +114,8 @@ class TagPattern(Pattern):
         el = etree.Element(self.tag)
         if self.attrib:
             for k, v in list(self.attrib.items()):
-                if k == 'cls':
-                    k = 'class'
+                if k == "cls":
+                    k = "class"
                 el.set(k, v)
         el.text = m.group(2)
         return el
@@ -157,18 +144,22 @@ class BoxSectionProcessor(BlockProcessor):
         if m:
             # all text before we matched our pattern (in this instance that's lines
             # starting with '|' characters
-            before = block[:m.start()]  # Lines before box
+            before = block[: m.start()]  # Lines before box
             # Pass lines before blockquote in recursively for parsing first.
             # parseblocks just runs every blockprocessor over the block
             self.parser.parseBlocks(parent, [before])
-            block = '\n'.join(
-                [self.clean(line) for line in block[m.start():].split('\n') if self.pattern.search(line) ]
+            block = "\n".join(
+                [
+                    self.clean(line)
+                    for line in block[m.start():].split("\n")
+                    if self.pattern.search(line)
+                ]
             )
-        quote = etree.SubElement(parent, 'div', {'class': 'box'})
+        quote = etree.SubElement(parent, "div", {"class": "box"})
         #    quote.set('class', 'box')
         # Recursively parse block with blockquote as parent.
         # change parser state so blockquotes embedded in lists use p tags
-        self.parser.state.set('box')
+        self.parser.state.set("box")
         # spit block on '\n\n', run all blockprocessors over it and attach output
         # to the provided parent('quote') (in this case a div)
         self.parser.parseChunk(quote, block)
@@ -178,12 +169,13 @@ class BoxSectionProcessor(BlockProcessor):
     def clean(self, line):
         """ Remove ``|`` from beginning (and possibly end)of a line. """
         m = self.pattern.match(line)
-        if line.strip() == "|" or re.match(r'^\| *\|$', line):
+        if line.strip() == "|" or re.match(r"^\| *\|$", line):
             return "\n\n"
         elif m:
             return m.group(2)
         else:
             return line.strip()
+
 
 class CollapseChildProcessor(Treeprocessor):
     """
@@ -197,9 +189,11 @@ class CollapseChildProcessor(Treeprocessor):
     </p>
     </div>
     """
-    def __init__(self, markdown_instance=None, target='div', tclass='box', child_tag='p'):
-        """
-        """
+
+    def __init__(
+        self, markdown_instance=None, target="div", tclass="box", child_tag="p"
+    ):
+        """"""
         super(CollapseChildProcessor, self).__init__(markdown_instance)
         self.target = target
         if tclass is not None:
@@ -208,12 +202,12 @@ class CollapseChildProcessor(Treeprocessor):
 
     def run(self, tree):
         # handle the idea that there may be multiple top-level elements
-        stack=[tree]
+        stack = [tree]
         while stack:
             current = stack.pop()
             # process each element, which may have children of its own
             for elem in current:
-                cur_classes = set(elem.get('class','' ).split())
+                cur_classes = set(elem.get("class", "").split())
                 if elem.tag == self.target:
                     if self.tclass is not None:
                         if not self.tclass.issubset(cur_classes):
@@ -247,7 +241,7 @@ class CollapseChildProcessor(Treeprocessor):
                 target.text = child.text
                 found = True
             else:
-                newbr = etree.SubElement(target, 'br')
+                newbr = etree.SubElement(target, "br")
                 if len(child.text.strip()) != 0:
                     newbr.tail = child.text
 
@@ -258,19 +252,103 @@ class CollapseChildProcessor(Treeprocessor):
 
 
 class UkeBookExtension(Extension):
-    def extendMarkdown(self, md, md_globals):
+    def __init__(self, **kwargs):
+        """
+        initialiser, sets config (parameters), runs parent init.
+        """
+        self.config = {
+            "header_pattern": [
+                patterns.HEADER,
+                "regular expression matching header elements",
+            ],
+            "inline_element": [
+                "span",
+                "HTML element for inline items"
+            ],
+            "chord_pattern": [
+                patterns.CHORD,
+                "regular expression matching chords"
+            ],
+            "vox_pattern": [
+                patterns.VOX,
+                "regular expression matching backing vocals"
+            ],
+            "notes_pattern": [
+                patterns.NOTES,
+                "regular expression matching notes/instructions",
+            ],
+        }
+        super().__init__(**kwargs)
+
+    def extendMarkdown(self, md):
+        """
+        Adds our custom processors to the current markdown instance
+
+        Args:
+            md: markdown instance
+        """
         # add our extensions...
-        # preprocessor
-        md.preprocessors.add('junk_cleaner', JunkCleaner(md), '_begin')
-        md.preprocessors.add('headers', HeaderProcessor(md, patterns.HEADER), '<reference')
-        md.inlinePatterns.add('section_header', TagPattern(patterns.HEADER, md, 'span', cls='section_header'), '<reference')
-        md.inlinePatterns.add('chord', TagPattern(patterns.CHORD, md, 'span', cls='chord'), '<reference')
+        # processors are now executed in descending priority order,
+        # md.preprocessors.add('junk_cleaner', JunkCleaner(md), '_begin')
+        # currently the first preprocessor has prio 30, we should run first.
+        # set an absurdly high priority in case other extensions get in the way
+        md.preprocessors.register(JunkCleaner(md), "junk_cleaner", 100)
+        md.preprocessors.register(
+            HeaderProcessor(md, self.getConfig("header_patterns")), "headers", 11
+        )
+        #  inlinePatterns.register(EscapeInlineProcessor(ESCAPE_RE, md), 'escape', 180)
+        md.inlinePatterns.register(
+            TagPattern(
+                self.getConfig("header_pattern"),
+                md,
+                self.getConfig("inline_element"),
+                cls="section_header",
+            ),
+            "section_header",
+            179,
+        )
+        md.inlinePatterns.register(
+            TagPattern(
+                self.getConfig("chord_pattern"),
+                md,
+                self.getConfig("inline_element"),
+                cls="chord",
+            ),
+            "chord",
+            178,
+        )
         # add our 'other stuff in brackets' pattern AFTER chord processing
-        # md.inlinePatterns.add('vox', VoxPattern(patterns.VOX, md), '>chord')
-        md.inlinePatterns.add('vox', TagPattern(patterns.VOX, md, 'span', cls='vox'), '>chord')
-        md.inlinePatterns.add('notes', TagPattern(patterns.NOTES, md, 'span', cls='notes'), '>vox')
-        md.parser.blockprocessors.add('box', BoxSectionProcessor(md.parser), '>empty')
-        md.treeprocessors.add('collapsediv', CollapseChildProcessor(md), '<inline')
+        # md.inlinePatterns.register('vox', VoxPattern(patterns.VOX, md), '>chord')
+        md.inlinePatterns.register(
+            TagPattern(
+                self.getConfig("vox_pattern"),
+                md,
+                self.getConfig("inline_element"),
+                cls="vox",
+            ),
+            "vox",
+            177,
+        )
+        md.inlinePatterns.register(
+            TagPattern(
+                self.getConfig("notes_pattern"),
+                md,
+                self.getConfig("inline_element"),
+                cls="notes",
+            ),
+            "notes",
+            176,
+        )
+
+        # block processors
+        # md.parser.blockprocessors.register(BoxSectionProcessor(md.parser), 'box', '>empty')
+        # parser.blockprocessors.register(EmptyBlockProcessor(parser), 'empty', 100)
+        md.parser.blockprocessors.register(BoxSectionProcessor(md.parser), "box", 95)
+
+        # tree processors
+        # treeprocessors.register(InlineProcessor(md), 'inline', 20)
+        md.treeprocessors.register(CollapseChildProcessor(md), "collapsediv", 15)
+
 
 def makeExtension(*args, **kwargs):
     return UkeBookExtension(*args, **kwargs)
