@@ -15,7 +15,7 @@ Basic CSS to demonstrate is to be found in the 'css' subdir of the ukedown packa
 
 This package uses [Semantic Versioning](https://semver.org/)
 
-# What are these extensions anyway.
+# What are these extensions anyway?
 
 The following formatting is supported by ukedown:
 
@@ -26,6 +26,9 @@ These are parsed from the first non-blank line in a `ukedown` file, and is expec
 
 Where the separator is a normal ASCII hyphen (any Unicode m-dash and n-dash nonsense will be converted to ASCII).
 These are rendered as `<h1>` elements in HTML
+```html
+<h1>Down Under - Men at Work</h1>
+```
 
 ## Chord Names
 Chord names appear inline with lyrics and are enclosed in parentheses.
@@ -47,10 +50,10 @@ These are enclosed in square brackets, like this:
     
     [intro]
 
-They are rendered as `<span class="header">` elements.
+They are rendered as `<span class="section_header">` elements.
 Because they are inline, they can have chords and other items on the same line if required.
 ```html
-
+<span class="section_header">intro<span>
 ```
 
 
@@ -97,6 +100,25 @@ which will render as
 
 ### current limitations
 repeated boxes (i.e. 2 boxed sections in a row, which occasionally happens) *must* have a blank line between them, or they get merged into one box.
+
+## Hang on, where are all my brackets/parentheses/braces etc?
+ukedown itself only uses these to identify chords/backing vocals etc - it is up to you to decide if they should be in the final output. In fact if you want to render them completely differently you can, as they can be styled using CSS.
+
+### CSS providing brackets
+The following renders chord names with the delimiting () parentheses, without the `:before` and `:after` parts the would just be chord names.
+
+```css
+.chord {
+    font-weight: bold;
+}
+
+.chord:before {
+    content: "(";
+}
+.chord:after {
+    content: ")";
+}
+```
 
 # Style
 Ukedown only produces HTML elements with named classes, it does no styling itself - this should be done using CSS. A sample CSS example follows:
