@@ -151,7 +151,7 @@ class BoxSectionProcessor(BlockProcessor):
             block = "\n".join(
                 [
                     self.clean(line)
-                    for line in block[m.start():].split("\n")
+                    for line in block[m.start() :].split("\n")
                     if self.pattern.search(line)
                 ]
             )
@@ -245,7 +245,7 @@ class CollapseChildProcessor(Treeprocessor):
                 if len(child.text.strip()) != 0:
                     newbr.tail = child.text
 
-            for i in child.getchildren():
+            for i in child:
                 target.append(i)
 
             element.remove(child)
@@ -261,18 +261,9 @@ class UkeBookExtension(Extension):
                 patterns.HEADER,
                 "regular expression matching header elements",
             ],
-            "inline_element": [
-                "span",
-                "HTML element for inline items"
-            ],
-            "chord_pattern": [
-                patterns.CHORD,
-                "regular expression matching chords"
-            ],
-            "vox_pattern": [
-                patterns.VOX,
-                "regular expression matching backing vocals"
-            ],
+            "inline_element": ["span", "HTML element for inline items"],
+            "chord_pattern": [patterns.CHORD, "regular expression matching chords"],
+            "vox_pattern": [patterns.VOX, "regular expression matching backing vocals"],
             "notes_pattern": [
                 patterns.NOTES,
                 "regular expression matching notes/instructions",
