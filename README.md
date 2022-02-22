@@ -1,17 +1,23 @@
+<!-- markdownlint-disable MD013 -->
+<!-- vim: set tw=100 -->
 # Ukedown package
 
-Ukedown is a series of extensions to the standard
-[Markdown library](https://github.com/Python-Markdown/markdown/tree/master/markdown), version 3 and higher
-using the Extensions API, documented [here](https://python-markdown.github.io/extensions/api/)
+Ukedown is a series of extensions to the standard [Markdown
+library](https://github.com/Python-Markdown/markdown/tree/master/markdown),
+version 3 and higher using the Extensions API, documented
+[here](https://python-markdown.github.io/extensions/api/)
 
-It is intended to simplify songsheet (and songbook) generation for ukulele (although it work work well
-for other stringed instruments too), allowing songsheets to be written as plain text,
-which will be converted to HTML (via markdown) and thence to PDF.
+It is intended to simplify songsheet (and songbook) generation for ukulele
+(although it works well for other stringed instruments too), allowing
+songsheets to be written as plain text, which will be converted to HTML (via
+markdown) and thence to PDF.
 
 All output styling will be done using CSS - examples of this are available
-(with a toolset to use ukedown) from the [ukebook-md repository](https://github.com/lanky/ukebook-md)
+(with a toolset to use ukedown) from the [ukebook-md
+repository](https://github.com/lanky/ukebook-md)
 
-Basic CSS to demonstrate is to be found in the 'css' subdir of the ukedown package itself.
+Basic CSS to demonstrate is to be found in the 'css' subdir of the ukedown
+package itself.
 
 This package uses [Semantic Versioning](https://semver.org/)
 
@@ -20,17 +26,23 @@ This package uses [Semantic Versioning](https://semver.org/)
 The following formatting is supported by ukedown:
 
 ## Titles and Artists
-These are parsed from the first non-blank line in a `ukedown` file, and is expected to follow the format of
+
+These are parsed from the first non-blank line in a `ukedown` file, and is
+expected to follow the format of
 
     Down Under - Men at Work
 
-Where the separator is a normal ASCII hyphen (any Unicode m-dash and n-dash nonsense will be converted to ASCII).
+Where the separator is a normal ASCII hyphen (any Unicode m-dash and n-dash
+nonsense will be converted to ASCII).
+
 These are rendered as `<h1>` elements in HTML
+
 ```html
 <h1>Down Under - Men at Work</h1>
 ```
 
 ## Chord Names
+
 Chord names appear inline with lyrics and are enclosed in parentheses.
 These should be chord names only, with the exception that
 characters such as '*' are supported - we use these in places to indicate 
@@ -40,10 +52,12 @@ single strums or stabs.
 
 These are rendered as `<span class="chord">` elements,as follows
 ```html
-<span class="chord">Am</span>First I was afraid I was <span class="chord">Dm</span>petrified,<br/>
+At<span class="chord">Am</span>
+First I was afraid I was <span class="chord">Dm</span>petrified,<br/>
 ```
 
-## section headers
+## Section headings
+
 Basically song section titles like "verse 1" and "chorus".
 
 These are enclosed in square brackets, like this:
@@ -56,22 +70,30 @@ Because they are inline, they can have chords and other items on the same line i
 <span class="section_header">intro<span>
 ```
 
-
 ## Performance notes
+
 Things like *slowly* or *single strums* or *fade out*
 
 These are enclosed in curly braces
 
     {slowly}
 
-although they appear in rendered documents as 
+and they appear in rendered documents as 
+
 ```html
 <span class="notes">slowly</span>
 ```
 
 ## Backing vocals
-Currently these are delimited in the same fashion as chords, and are distinguished by **not** matching a known chord pattern.
-This is likely to change (most probably to `<>` or `::`) to simplify the rendering and to allow nesting of elements, which currently doesn't work properly (e.g. chords inside backing vox)
+
+Currently these are delimited in the same fashion as chords, and are
+distinguished by **not** matching a known chord pattern.
+
+This is likely to change (most probably to `<>` or `::`) to simplify the rendering 
+and to allow nesting of elements, which currently doesn't work properly 
+(e.g. chords inside backing vox)
+
+An example of backing vocal in context is
 
     (you're gonna wish you, never had met me)
 
@@ -88,6 +110,7 @@ Boxes can also contain section headings, as shown
     | I don't be(Cm)long here
 
 which will render as 
+
 ```html
 <div class="box">
   <p><span class="section_header">chorus</span><br/>
@@ -99,13 +122,23 @@ which will render as
 ```
 
 ### current limitations
-repeated boxes (i.e. 2 boxed sections in a row, which occasionally happens) *must* have a blank line between them, or they get merged into one box.
+
+* repeated boxes (i.e. 2 boxed sections in a row, which occasionally happens)
+  *must* have a blank line between them, or they get merged into one box.
+
+* because chords and backing vocals share markup, they cannot be nested.
 
 ## Hang on, where are all my brackets/parentheses/braces etc?
-ukedown itself only uses these to identify chords/backing vocals etc - it is up to you to decide if they should be in the final output. In fact if you want to render them completely differently you can, as they can be styled using CSS.
+
+ukedown itself only uses these to identify chords/backing vocals etc - it is up
+to you to decide if they should be in the final output.
+
+In fact if you want to render them completely differently you can, as they can be styled using CSS.
 
 ### CSS providing brackets
-The following renders chord names with the delimiting () parentheses, without the `:before` and `:after` parts the would just be chord names.
+
+The following renders chord names with the delimiting () parentheses, without
+the `:before` and `:after` parts they would just be chord names.
 
 ```css
 .chord {
@@ -121,7 +154,9 @@ The following renders chord names with the delimiting () parentheses, without th
 ```
 
 # Style
-Ukedown only produces HTML elements with named classes, it does no styling itself - this should be done using CSS. A sample CSS example follows:
+
+Ukedown only produces HTML elements with named classes, it does no styling
+itself - this should be done using CSS. A sample CSS example follows:
 
 ```css
 @charset 'utf-8';
