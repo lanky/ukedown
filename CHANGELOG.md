@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.1.1
+777bb12 BUGFIX: silly typo in repeats pattern   (HEAD -> refs/heads/master)
+
 ## v.2.1.0
 95dce5e  (HEAD -> refs/heads/master, tag: refs/tags/v2.1.0)
 d9ad3a6 permit additional punctuation chars in vox
