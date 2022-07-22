@@ -99,6 +99,14 @@ class NotesPattern(Pattern):
         return el
 
 
+class RepeatsPattern(Pattern):
+    def handleMatch(self, m):
+        el = etree.Element("span")
+        el.set("class", "repeats")
+        el.text = m.group(2)
+        return el
+
+
 class TagPattern(Pattern):
     """
     wrapper class around pattern replacement
@@ -167,7 +175,7 @@ class BoxSectionProcessor(BlockProcessor):
         self.parser.state.reset()
 
     def clean(self, line):
-        """ Remove ``|`` from beginning (and possibly end)of a line. """
+        """Remove ``|`` from beginning (and possibly end)of a line."""
         m = self.pattern.match(line)
         if line.strip() == "|" or re.match(r"^\| *\|$", line):
             return "\n\n"
@@ -217,17 +225,21 @@ class CollapseChildProcessor(Treeprocessor):
 
     def mergechildren(self, element):
         """
-        merges all child paragraphs into a single para, replacing the <p> elements with linebreaks
+        merges all child paragraphs into a single para,
+        replacing the <p> elements with linebreaks
 
         Args:
-            element (etree.ElementTree.Element) - parent element whose children are to be merged/collapsed
+            element (etree.ElementTree.Element) -
+            - parent element whose children are to be merged/collapsed
 
         Kwargs:
-            ptag(str): type of element that you wish to create as the new 'merged' child. Defaults to 'para'
+            ptag(str): type of element that you wish to create as the
+            new 'merged' child. Defaults to 'para'
         """
         # get current children, as we're going to edit in place
         current_children = list(element)
-        # create a new child element, to which we will add the content of existing children (and their children)
+        # create a new child element, to which we will add the
+        # content of existing children (and their children)
         # arguably we should just use the first found p
         target = etree.SubElement(element, self.child_tag)
         found = False
@@ -267,6 +279,10 @@ class UkeBookExtension(Extension):
             "notes_pattern": [
                 patterns.NOTES,
                 "regular expression matching notes/instructions",
+            ],
+            "repeats_pattern": [
+                patterns.REPEATS,
+                "regular expression matching repeats",
             ],
         }
         super().__init__(**kwargs)
@@ -329,6 +345,17 @@ class UkeBookExtension(Extension):
             ),
             "notes",
             176,
+        )
+
+        md.inlinePatterns.register(
+            TagPattern(
+                self.getConfig("repeats_pattern"),
+                md,
+                self.getConfig("inline_element"),
+                cls="repeats",
+            ),
+            "repeats",
+            178,
         )
 
         # block processors
