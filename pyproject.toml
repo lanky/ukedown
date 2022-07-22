@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ukedown"
-version = "2.0.0"
+version = "2.1.0"
 description = "Markdown extensions for songsheet creation"
 authors = ["Stuart Sears <stuart@sjsears.com>"]
 license = "GPLv3"
