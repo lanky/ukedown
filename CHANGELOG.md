@@ -1,5 +1,16 @@
 # Changelog
 
+## v.2.1.0
+95dce5e  (HEAD -> refs/heads/master, tag: refs/tags/v2.1.0)
+d9ad3a6 permit additional punctuation chars in vox
+8fb2df0 reflowed for linelengths (linting)
+b47885c Use poetry in CI
+8397967 Re-enable CI tests with pytest
+25992d2 Add some simple unit tests of regex patterns
+df27c9d Add pytest as a dev dependency
+702dee3 updates to README with more examples   (refs/heads/pytest)
+ac33f58 Adds example CSS file  lanky@behemoth:ukedown (master *$%>)
+
 ## v 2.0.0
 44e9aa0 (HEAD -> master, tag: v2.0.0) Add poetry lockfile
 75cb4dd (origin/master, origin/HEAD) python project config using poetry
