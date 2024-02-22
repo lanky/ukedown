@@ -309,7 +309,7 @@ class UkeBookExtension(Extension):
         # set an absurdly high priority in case other extensions get in the way
         md.preprocessors.register(JunkCleaner(md), "junk_cleaner", 100)
         md.preprocessors.register(
-            HeaderProcessor(md, self.getConfig("header_patterns")), "headers", 11
+            HeaderProcessor(md, self.getConfig("header_pattern")), "headers", 11
         )
         md.inlinePatterns.register(
             SectionHeaderProcessor(self.getConfig("header_pattern"), md), "header", 179
