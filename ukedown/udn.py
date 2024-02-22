@@ -22,7 +22,7 @@ import xml.etree.ElementTree as etree
 
 from markdown import Extension
 from markdown.blockprocessors import BlockProcessor
-from markdown.inlinepatterns import Pattern
+from markdown.inlinepatterns import InlineProcessor
 from markdown.postprocessors import Postprocessor
 from markdown.preprocessors import Preprocessor
 from markdown.treeprocessors import Treeprocessor
@@ -67,50 +67,51 @@ class HeaderProcessor(Preprocessor):
         return new_lines
 
 
-class SectionHeader(Pattern):
-    def handleMatch(self, m):
+class SectionHeaderProcessor(InlineProcessor):
+    def handleMatch(self, m, data):
         el = etree.Element("span")
         el.attrib["class"] = "section_header"
-        el.text = m.group(2)
-        return el
+        el.text = m.group(1)
+        return el, m.start(0), m.end(0)
 
 
-class ChordPattern(Pattern):
-    def handleMatch(self, m):
+class ChordProcessor(InlineProcessor):
+    def handleMatch(self, m, data):
         el = etree.Element("span")
         el.attrib["class"] = "chord"
-        el.text = m.group(2)
-        return el
+        el.text = m.group(1)
+        return el, m.start(0), m.end(0)
 
 
-class VoxPattern(Pattern):
-    def handleMatch(self, m):
+class VoxProcessor(InlineProcessor):
+    def handleMatch(self, m, data):
         el = etree.Element("span")
         el.set("class", "vox")
-        el.text = m.group(2)
-        return el
+        el.text = m.group(1)
+        return el, m.start(0), m.end(0)
 
 
-class NotesPattern(Pattern):
-    def handleMatch(self, m):
+class NotesProcessor(InlineProcessor):
+    def handleMatch(self, m, data):
         el = etree.Element("span")
         el.set("class", "notes")
-        el.text = m.group(2)
-        return el
+        el.text = m.group(1)
+        return el, m.start(0), m.end(0)
 
 
-class RepeatsPattern(Pattern):
-    def handleMatch(self, m):
+class RepeatsProcessor(InlineProcessor):
+    def handleMatch(self, m, data):
         el = etree.Element("span")
         el.set("class", "repeats")
-        el.text = m.group(2)
-        return el
+        el.text = m.group(1)
+        return el, m.start(0), m.end(0)
 
 
-class TagPattern(Pattern):
+class TagProcessor(InlineProcessor):
     """
     wrapper class around pattern replacement
-    sets additional attrs, allows us to use the same 'factory' for each pattern
+    sets additional attrs, allows us to use the same 'factory'
+    for each pattern
     """
 
     def __init__(self, pattern, markdown_instance=None, tag="span", **attrib):
@@ -301,59 +302,26 @@ class UkeBookExtension(Extension):
         md.preprocessors.register(
             HeaderProcessor(md, self.getConfig("header_patterns")), "headers", 11
         )
-        #  inlinePatterns.register(EscapeInlineProcessor(ESCAPE_RE, md), 'escape', 180)
         md.inlinePatterns.register(
-            TagPattern(
-                self.getConfig("header_pattern"),
-                md,
-                self.getConfig("inline_element"),
-                cls="section_header",
-            ),
-            "section_header",
-            179,
-        )
-        md.inlinePatterns.register(
-            TagPattern(
-                self.getConfig("chord_pattern"),
-                md,
-                self.getConfig("inline_element"),
-                cls="chord",
-            ),
-            "chord",
-            178,
-        )
-        # add our 'other stuff in brackets' pattern AFTER chord processing
-        # md.inlinePatterns.register('vox', VoxPattern(patterns.VOX, md), '>chord')
-        md.inlinePatterns.register(
-            TagPattern(
-                self.getConfig("vox_pattern"),
-                md,
-                self.getConfig("inline_element"),
-                cls="vox",
-            ),
-            "vox",
-            177,
-        )
-        md.inlinePatterns.register(
-            TagPattern(
-                self.getConfig("notes_pattern"),
-                md,
-                self.getConfig("inline_element"),
-                cls="notes",
-            ),
-            "notes",
-            176,
+            SectionHeaderProcessor(self.getConfig("header_pattern"), md), "header", 179
         )
 
         md.inlinePatterns.register(
-            TagPattern(
-                self.getConfig("repeats_pattern"),
-                md,
-                self.getConfig("inline_element"),
-                cls="repeats",
-            ),
-            "repeats",
+            ChordProcessor(self.getConfig("chord_pattern"), md),
+            "chord",
             178,
+        )
+
+        md.inlinePatterns.register(
+            VoxProcessor(self.getConfig("vox_pattern"), md), "vox", 177
+        )
+
+        md.inlinePatterns.register(
+            NotesProcessor(self.getConfig("notes_pattern"), md), "notes", 176
+        )
+
+        md.inlinePatterns.register(
+            RepeatsProcessor(self.getConfig("repeats_pattern"), md), "repeats", 178
         )
 
         # block processors
