@@ -262,6 +262,15 @@ class CollapseChildProcessor(Treeprocessor):
             element.remove(child)
 
 
+class VoxPostProcessor(Postprocessor):
+    """Find all orphaned parens and wrap them as backing vox."""
+
+    def run(self, text: str) -> str:
+        """Replace start and end markers with an appropriate span."""
+        # get the start and end markers from settings
+        return text.replace("(", '<span class="vox">').replace(")", "</span>")
+
+
 class UkeBookExtension(Extension):
     def __init__(self, **kwargs):
         """
@@ -333,6 +342,8 @@ class UkeBookExtension(Extension):
         # treeprocessors.register(InlineProcessor(md), 'inline', 20)
         md.treeprocessors.register(CollapseChildProcessor(md), "collapsediv", 15)
 
+        # postprocessing - clean up the final output
+        # md.postprocessors.register(VoxPostProcessor(md), "postvox", 90)
 
 def makeExtension(*args, **kwargs):
     return UkeBookExtension(*args, **kwargs)
