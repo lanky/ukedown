@@ -156,13 +156,11 @@ class BoxSectionProcessor(BlockProcessor):
             # Pass lines before blockquote in recursively for parsing first.
             # parseblocks just runs every blockprocessor over the block
             self.parser.parseBlocks(parent, [before])
-            block = "\n".join(
-                [
-                    self.clean(line)
-                    for line in block[m.start() :].split("\n")
-                    if self.pattern.search(line)
-                ]
-            )
+            block = "\n".join([
+                self.clean(line)
+                for line in block[m.start() :].split("\n")
+                if self.pattern.search(line)
+            ])
         quote = etree.SubElement(parent, "div", {"class": "box"})
         #    quote.set('class', 'box')
         # Recursively parse block with blockquote as parent.
