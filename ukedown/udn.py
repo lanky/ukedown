@@ -345,5 +345,6 @@ class UkeBookExtension(Extension):
         # postprocessing - clean up the final output
         # md.postprocessors.register(VoxPostProcessor(md), "postvox", 90)
 
+
 def makeExtension(*args, **kwargs):
     return UkeBookExtension(*args, **kwargs)
