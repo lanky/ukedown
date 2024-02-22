@@ -21,14 +21,14 @@ import re
 import xml.etree.ElementTree as etree
 
 from markdown import Extension
-from markdown.preprocessors import Preprocessor
 from markdown.blockprocessors import BlockProcessor
 from markdown.inlinepatterns import Pattern
+from markdown.postprocessors import Postprocessor
+from markdown.preprocessors import Preprocessor
 from markdown.treeprocessors import Treeprocessor
 
 # local imports
-from . import patterns
-from . import translations
+from . import patterns, translations
 
 
 class JunkCleaner(Preprocessor):
