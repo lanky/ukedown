@@ -20,6 +20,7 @@
 # re.compile(PATTERN, re.UNICODE|re.DOTALL)
 
 # approximation of chords - covers major minor dim aug sus and 7/9/13 etc
+
 # CHORD = r'\(([A-G][adgijmnsu0-9#b+-\/\*]*(?:\s*[\u2013\u2014-]\s*single(?:\s*strums?)?)?)\)'
 CHORD = r"\(([A-G][adgijmnsu0-9#b+-\/\*A-G]*)\)"
 
