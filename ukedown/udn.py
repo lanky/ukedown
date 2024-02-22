@@ -279,18 +279,18 @@ class UkeBookExtension(Extension):
         self.config = {
             "header_pattern": [
                 patterns.HEADER,
-                "regular expression matching header elements",
+                "regex matching header elements",
             ],
             "inline_element": ["span", "HTML element for inline items"],
-            "chord_pattern": [patterns.CHORD, "regular expression matching chords"],
-            "vox_pattern": [patterns.VOX, "regular expression matching backing vocals"],
+            "chord_pattern": [patterns.CHORD, "regex matching chords"],
+            "vox_pattern": [patterns.VOX, "regex matching backing vocals"],
             "notes_pattern": [
                 patterns.NOTES,
-                "regular expression matching notes/instructions",
+                "regex matching notes/instructions",
             ],
             "repeats_pattern": [
                 patterns.REPEATS,
-                "regular expression matching repeats",
+                "regex matching repeats",
             ],
         }
         super().__init__(**kwargs)
