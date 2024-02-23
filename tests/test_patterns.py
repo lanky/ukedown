@@ -7,16 +7,18 @@ from ukedown import patterns
 
 def pytest_generate_tests(metafunc: pytest.Metafunc):
     metafunc.parametrize(
-        'case',
-        getattr(metafunc.cls, metafunc.function.__name__.replace('test_', ''), []),
-        scope='class'
+        "case",
+        getattr(metafunc.cls, metafunc.function.__name__.replace("test_", ""), []),
+        scope="class",
     )
 
 
 class Base:
     @property
     def pattern(self) -> re.Pattern:
-        return re.compile(getattr(patterns, self.__class__.__name__.replace('Test', '').upper()))
+        return re.compile(
+            getattr(patterns, self.__class__.__name__.replace("Test", "").upper())
+        )
 
     def test_matches(self, case: str):
         assert self.pattern.match(case)
@@ -27,73 +29,76 @@ class Base:
 
 class TestChord(Base):
     matches = [
-        '(C)',
-        '(C#)',
-        '(Cb)',
-        '(Dm)',
+        "(C)",
+        "(C#)",
+        "(Cb)",
+        "(Dm)",
     ]
     failures = [
-        '(H)',
+        "(H)",
     ]
 
 
 class TestHyphens(Base):
     matches = [
-        '-',
-        '- ',
-        ' -',
-        '  -   ',
-        '—',
+        "-",
+        "- ",
+        " -",
+        "  -   ",
+        "—",
     ]
     failures = [
-        '_',
+        "_",
     ]
 
 
 class TestVox(Base):
     matches = [
-        '(I can mash potato)',
-        '(I can (Bb)mash po(C)tato)',
+        "(I can mash potato)",
+        "(I can (Bb)mash po(C)tato)",
+        """(G) I'll be (C)there for (D)you (when the rain starts to
+(G)Pour) I'll be (C)there for (D)you (like I've been there
+Be(G)fore) I'll be (C)there for (D)you ('Cause you're there for me (F)too)""",
     ]
 
 
 class TestNotes(Base):
     matches = [
-        '{repeat x2}',
-        '{demented choir noises}',
+        "{repeat x2}",
+        "{demented choir noises}",
     ]
 
 
 class TestBox(Base):
     matches = [
-        '| {repeat x2}',
+        "| {repeat x2}",
         # New paragraph within box?
-        '| |',
+        "| |",
     ]
     failures = [
         # TODO: These should (probably) not fail?
         # https://github.com/birdcolour/ukulele-wednesdays/issues/24
-        '| (D) (D) (D) (F) | (D) (D) (D) (F)',
-        '| (C) (C) (A7sus4) (A7sus4) | (G) (G) (F) (F)',
-        '| (D) (D) (D) (F) | (D) (D) (D) (F) |',
-        '| (C) (C) (A7sus4) (A7sus4) | (G) (G) (F) (F) |',
+        "| (D) (D) (D) (F) | (D) (D) (D) (F)",
+        "| (C) (C) (A7sus4) (A7sus4) | (G) (G) (F) (F)",
+        "| (D) (D) (D) (F) | (D) (D) (D) (F) |",
+        "| (C) (C) (A7sus4) (A7sus4) | (G) (G) (F) (F) |",
         # https://github.com/birdcolour/ukulele-wednesdays/issues/25
-        '|',
-        '| ',
+        "|",
+        "| ",
     ]
 
 
 class TestHeader(Base):
     matches = [
-        '[chorus]',
-        '[bridge]',
+        "[chorus]",
+        "[bridge]",
     ]
 
 
 class TestRepeats(Base):
     matches = [
-        'x2',
+        "x2",
     ]
     failures = [
-        'x 3',
+        "x 3",
     ]
