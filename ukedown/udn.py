@@ -107,29 +107,6 @@ class RepeatsProcessor(InlineProcessor):
         return el, m.start(0), m.end(0)
 
 
-class TagProcessor(InlineProcessor):
-    """
-    wrapper class around pattern replacement
-    sets additional attrs, allows us to use the same 'factory'
-    for each pattern
-    """
-
-    def __init__(self, pattern, markdown_instance=None, tag="span", **attrib):
-        super(TagPattern, self).__init__(pattern, markdown_instance)
-        self.tag = tag
-        self.attrib = attrib
-
-    def handleMatch(self, m):
-        el = etree.Element(self.tag)
-        if self.attrib:
-            for k, v in list(self.attrib.items()):
-                if k == "cls":
-                    k = "class"
-                el.set(k, v)
-        el.text = m.group(2)
-        return el
-
-
 class BoxSectionProcessor(BlockProcessor):
     """process the ^| lines representing a box in a chord sheet"""
 
@@ -157,11 +134,13 @@ class BoxSectionProcessor(BlockProcessor):
             # Pass lines before blockquote in recursively for parsing first.
             # parseblocks just runs every blockprocessor over the block
             self.parser.parseBlocks(parent, [before])
-            block = "\n".join([
-                self.clean(line)
-                for line in block[m.start() :].split("\n")
-                if self.pattern.search(line)
-            ])
+            block = "\n".join(
+                [
+                    self.clean(line)
+                    for line in block[m.start() :].split("\n")
+                    if self.pattern.search(line)
+                ]
+            )
         quote = etree.SubElement(parent, "div", {"class": "box"})
         #    quote.set('class', 'box')
         # Recursively parse block with blockquote as parent.
