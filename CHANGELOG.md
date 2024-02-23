@@ -1,5 +1,18 @@
 # Changelog
 
+##v2.2.0
+c7a47c6 - (HEAD -> postprocessing_vox) Remove unused TagProcessor
+95f9f08 - (origin/postprocessing_vox) linting
+9a1280b - Fix parameter typo in HeaderProcessor
+afaea8d - Tidy up parametersin UkeBookExtension
+6314279 - Add VoxPostProcessor for future use
+1df948d - Move to InlineProcessor from inlinePattern
+dbac90b - Make backing vox pattern much simpler
+fc0df36 - ruff linting
+c1b3783 - Import tidying
+1ca972d - Add grouping to chord pattern
+
+
 ## v2.1.1
 777bb12 BUGFIX: silly typo in repeats pattern   (HEAD -> refs/heads/master)
 

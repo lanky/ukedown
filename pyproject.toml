@@ -1,9 +1,15 @@
 [tool.poetry]
 name = "ukedown"
-version = "2.1.0"
+version = "2.2.0"
 description = "Markdown extensions for songsheet creation"
 authors = ["Stuart Sears <stuart@sjsears.com>"]
-license = "GPLv3"
+include = ["CHANGELOG.md"]
+license = "GPL-3.0-or-later"
+repository = "https://github.com/lanky/ukedown"
+readme = [ "README.md", "LICENSE.txt", "CHANGELOG.md" ]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/lanky/ukedown/issues"
 
 [tool.poetry.dependencies]
 python = ">=3.7"
