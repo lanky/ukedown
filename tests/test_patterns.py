@@ -53,10 +53,7 @@ class TestHyphens(Base):
 class TestVox(Base):
     matches = [
         '(I can mash potato)',
-    ]
-    failures = [
         '(I can (Bb)mash po(C)tato)',
-        '(I can (mash) potato)',
     ]
 
 
