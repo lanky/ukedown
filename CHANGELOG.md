@@ -1,6 +1,19 @@
-# Changelog
+# Changelog#
 
-##v2.2.0
+## v2.2.1 - BUGFIX release
+
+- fixes issues with tests and GH Actions
+
+b7c1d34 - (HEAD -> master, origin/master, origin/HEAD) Update dependencies and lockfile (2 hours ago) <Stuart Sears>
+eea9d85 - Update Vox test patterns (2 hours ago) <Stuart Sears>
+cad2486 - Updated Github Actions (2 hours ago) <Stuart Sears>
+275d7a0 - Bump to v2.2.0, add URLS and changelogs to package (2 hours ago) <Stuart Sears>
+2fbd2d1 - Remove unused TagProcessor (2 hours ago) <Stuart Sears>
+2220219 - Update python-package.yml (2 hours ago) <Stuart Sears>
+8873393 - linting (2 hours ago) <Stuart Sears>
+
+
+## v2.2.0
 c7a47c6 - (HEAD -> postprocessing_vox) Remove unused TagProcessor
 95f9f08 - (origin/postprocessing_vox) linting
 9a1280b - Fix parameter typo in HeaderProcessor
