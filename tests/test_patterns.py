@@ -87,6 +87,12 @@ class TestBox(Base):
         "| ",
     ]
 
+class TestSinger(Base):
+    matches = [
+        "<Danny>",
+        "<spoken>",
+    ]
+
 
 class TestHeader(Base):
     matches = [
