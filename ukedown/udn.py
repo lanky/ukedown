@@ -98,6 +98,13 @@ class NotesProcessor(InlineProcessor):
         el.text = m.group(1)
         return el, m.start(0), m.end(0)
 
+class SingerProcessor(InlineProcessor):
+    def handleMatch(self, m, data):
+        el = etree.Element("span")
+        el.set("class", "singer")
+        el.text = m.group(1)
+        return el, m.start(0), m.end(0)
+
 
 class RepeatsProcessor(InlineProcessor):
     def handleMatch(self, m, data):
@@ -263,6 +270,7 @@ class UkeBookExtension(Extension):
             "inline_element": ["span", "HTML element for inline items"],
             "chord_pattern": [patterns.CHORD, "regex matching chords"],
             "vox_pattern": [patterns.VOX, "regex matching backing vocals"],
+            "singer_pattern": [patterns.SINGER, "regex matching singers' notes"],
             "notes_pattern": [
                 patterns.NOTES,
                 "regex matching notes/instructions",
@@ -302,6 +310,10 @@ class UkeBookExtension(Extension):
 
         md.inlinePatterns.register(
             VoxProcessor(self.getConfig("vox_pattern"), md), "vox", 177
+        )
+
+        md.inlinePatterns.register(
+            SingerProcessor(self.getConfig("singer_pattern"), md), "singer", 177
         )
 
         md.inlinePatterns.register(

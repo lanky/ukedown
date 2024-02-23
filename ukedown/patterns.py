@@ -45,3 +45,6 @@ HEADER = r"\[([^]]+)\]"
 
 # pattern to pickup and "boldify" repetitions
 REPEATS = r"(x\d+)"
+
+# Singers' instructions/notes now in angled brackets
+SINGER = r"<([^<]+)>"
