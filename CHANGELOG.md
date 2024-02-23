@@ -1,9 +1,14 @@
 # Changelog#
 
+## v2.2.2 - FEATURE
+- add support for "singers notes"
+a37c56a - (HEAD -> master, origin/master, origin/HEAD) Add support for singers' instructions
+
 ## v2.2.1 - BUGFIX release
 
 - fixes issues with tests and GH Actions
 
+090c88b - BUGFIX release v2.2.1
 b7c1d34 - (HEAD -> master, origin/master, origin/HEAD) Update dependencies and lockfile (2 hours ago) <Stuart Sears>
 eea9d85 - Update Vox test patterns (2 hours ago) <Stuart Sears>
 cad2486 - Updated Github Actions (2 hours ago) <Stuart Sears>

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ukedown"
-version = "2.2.1"
+version = "2.2.2"
 description = "Markdown extensions for songsheet creation"
 authors = ["Stuart Sears <stuart@sjsears.com>"]
 include = ["CHANGELOG.md"]
