@@ -1,26 +1,19 @@
-[tool.poetry]
+[project]
 name = "ukedown"
-version = "2.2.2"
+version = "2.2.3"
 description = "Markdown extensions for songsheet creation"
-authors = ["Stuart Sears <stuart@sjsears.com>"]
-include = ["CHANGELOG.md"]
-license = "GPL-3.0-or-later"
-repository = "https://github.com/lanky/ukedown"
-readme = [ "README.md", "LICENSE.txt", "CHANGELOG.md" ]
+readme = "README.md"
+authors = [{ name = "Stuart Sears", email = "stuart@sjsears.com" }]
+requires-python = ">=3.10"
+dependencies = ["markdown>=3.10.2"]
 
-[tool.poetry.urls]
+[project.urls]
 "Bug Tracker" = "https://github.com/lanky/ukedown/issues"
-
-[tool.poetry.dependencies]
-python = ">=3.9"
-markdown = "^3.5.2"
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.0.1"
-flake8 = "^4.0.1"
-ruff = "^0.2.2"
-pydocstyle = "^6.3.0"
+repository = "https://github.com/lanky/ukedown"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.11.15,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = ["pytest>=9.0.3", "ruff>=0.15.17"]
