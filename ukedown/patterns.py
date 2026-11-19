@@ -48,3 +48,6 @@ REPEATS = r"(x\d+)"
 
 # Singers' instructions/notes now in angled brackets
 SINGER = r"<([^<]+)>"
+
+# Bar separators (pipes, surrounded by spaces, if not at beginnning or end of line)
+BAR = r"(?<!^)\s([|])(?!$)"

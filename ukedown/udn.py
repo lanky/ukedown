@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # ukedown
 # Copyright (C) 2017 Stuart Sears
@@ -48,7 +47,7 @@ class HeaderProcessor(Preprocessor):
     """
 
     def __init__(self, markdown_instance=None, pattern=patterns.HEADER):
-        super(HeaderProcessor, self).__init__(markdown_instance)
+        super().__init__(markdown_instance)
         self.pattern = re.compile(pattern)
 
     def run(self, lines):
@@ -98,6 +97,7 @@ class NotesProcessor(InlineProcessor):
         el.text = m.group(1)
         return el, m.start(0), m.end(0)
 
+
 class SingerProcessor(InlineProcessor):
     def handleMatch(self, m, data):
         el = etree.Element("span")
@@ -114,11 +114,19 @@ class RepeatsProcessor(InlineProcessor):
         return el, m.start(0), m.end(0)
 
 
+class BarProcessor(InlineProcessor):
+    def handleMatch(self, m, data):
+        el = etree.Element("span")
+        el.set("class", "bar")
+        el.text = m.group(1)
+        return el, m.start(0), m.end(0)
+
+
 class BoxSectionProcessor(BlockProcessor):
     """process the ^| lines representing a box in a chord sheet"""
 
     def __init__(self, parser, pattern=patterns.BOX):
-        super(BoxSectionProcessor, self).__init__(parser)
+        super().__init__(parser)
 
         self.pattern = re.compile(pattern, re.MULTILINE)
 
@@ -187,7 +195,7 @@ class CollapseChildProcessor(Treeprocessor):
         self, markdown_instance=None, target="div", tclass="box", child_tag="p"
     ):
         """"""
-        super(CollapseChildProcessor, self).__init__(markdown_instance)
+        super().__init__(markdown_instance)
         self.target = target
         if tclass is not None:
             self.tclass = set(tclass.split())
@@ -271,6 +279,7 @@ class UkeBookExtension(Extension):
             "chord_pattern": [patterns.CHORD, "regex matching chords"],
             "vox_pattern": [patterns.VOX, "regex matching backing vocals"],
             "singer_pattern": [patterns.SINGER, "regex matching singers' notes"],
+            "bar_pattern": [patterns.BAR, "regex matching bar separators"],
             "notes_pattern": [
                 patterns.NOTES,
                 "regex matching notes/instructions",
@@ -322,6 +331,10 @@ class UkeBookExtension(Extension):
 
         md.inlinePatterns.register(
             RepeatsProcessor(self.getConfig("repeats_pattern"), md), "repeats", 178
+        )
+
+        md.inlinePatterns.register(
+            BarProcessor(self.getConfig("bar_pattern"), md), "bars", 179
         )
 
         # block processors
