@@ -31,8 +31,9 @@ from . import patterns, translations
 
 
 class JunkCleaner(Preprocessor):
-    """
-    just cleans up and returns unicode - essentially strips out the 'smart' characters wordprocessors like to
+    """Cleans up and returns unicode.
+
+    Essentially strips out the 'smart' characters wordprocessors like to
     use in place of good old proper text. Mostly hyphens and quote characters.
     """
 
@@ -59,7 +60,7 @@ class HeaderProcessor(Preprocessor):
             # if it's not blank, then this is what we want
             if x.strip() != "":
                 # append it flagged as h1 - remove any existing leading '#' symbols
-                new_lines.append("# %s" % x.lstrip("#"))
+                new_lines.append(f"# {x.lstrip('#')}")
                 break
         new_lines.extend(lines)
 
@@ -149,13 +150,11 @@ class BoxSectionProcessor(BlockProcessor):
             # Pass lines before blockquote in recursively for parsing first.
             # parseblocks just runs every blockprocessor over the block
             self.parser.parseBlocks(parent, [before])
-            block = "\n".join(
-                [
-                    self.clean(line)
-                    for line in block[m.start() :].split("\n")
-                    if self.pattern.search(line)
-                ]
-            )
+            block = "\n".join([
+                self.clean(line)
+                for line in block[m.start() :].split("\n")
+                if self.pattern.search(line)
+            ])
         quote = etree.SubElement(parent, "div", {"class": "box"})
         #    quote.set('class', 'box')
         # Recursively parse block with blockquote as parent.
@@ -201,18 +200,20 @@ class CollapseChildProcessor(Treeprocessor):
             self.tclass = set(tclass.split())
         self.child_tag = child_tag
 
-    def run(self, tree):
+    def run(self, root):
         # handle the idea that there may be multiple top-level elements
-        stack = [tree]
+        stack = [root]
         while stack:
             current = stack.pop()
             # process each element, which may have children of its own
             for elem in current:
                 cur_classes = set(elem.get("class", "").split())
                 if elem.tag == self.target:
-                    if self.tclass is not None:
-                        if not self.tclass.issubset(cur_classes):
-                            continue
+                    # if self.tclass is not None:
+                    #     if not self.tclass.issubset(cur_classes):
+                    #         continue
+                    if self.tclass and not self.tclass.issubset(cur_classes):
+                        continue
                     # merge all children under a single 'p' container
                     self.mergechildren(elem)
 
@@ -270,16 +271,32 @@ class UkeBookExtension(Extension):
         """
         initialiser, sets config (parameters), runs parent init.
         """
+        # should this be loaded from a config file?
         self.config = {
             "header_pattern": [
                 patterns.HEADER,
                 "regex matching header elements",
             ],
-            "inline_element": ["span", "HTML element for inline items"],
-            "chord_pattern": [patterns.CHORD, "regex matching chords"],
-            "vox_pattern": [patterns.VOX, "regex matching backing vocals"],
-            "singer_pattern": [patterns.SINGER, "regex matching singers' notes"],
-            "bar_pattern": [patterns.BAR, "regex matching bar separators"],
+            "inline_element": [
+                "span",
+                "HTML element for inline items",
+            ],
+            "chord_pattern": [
+                patterns.CHORD,
+                "regex matching chords",
+            ],
+            "vox_pattern": [
+                patterns.VOX,
+                "regex matching backing vocals",
+            ],
+            "singer_pattern": [
+                patterns.SINGER,
+                "regex matching singers' notes",
+            ],
+            "bar_pattern": [
+                patterns.BAR,
+                "regex matching bar separators",
+            ],
             "notes_pattern": [
                 patterns.NOTES,
                 "regex matching notes/instructions",
@@ -302,13 +319,25 @@ class UkeBookExtension(Extension):
         # processors are now executed in descending priority order,
         # md.preprocessors.add('junk_cleaner', JunkCleaner(md), '_begin')
         # currently the first preprocessor has prio 30, we should run first.
+
         # set an absurdly high priority in case other extensions get in the way
         md.preprocessors.register(JunkCleaner(md), "junk_cleaner", 100)
+
         md.preprocessors.register(
             HeaderProcessor(md, self.getConfig("header_pattern")), "headers", 11
         )
+
+        # now inline processors
         md.inlinePatterns.register(
-            SectionHeaderProcessor(self.getConfig("header_pattern"), md), "header", 179
+            SectionHeaderProcessor(self.getConfig("header_pattern"), md),
+            "header",
+            179,
+        )
+
+        md.inlinePatterns.register(
+            BarProcessor(self.getConfig("bar_pattern"), md),
+            "bars",
+            179,
         )
 
         md.inlinePatterns.register(
@@ -318,36 +347,34 @@ class UkeBookExtension(Extension):
         )
 
         md.inlinePatterns.register(
-            VoxProcessor(self.getConfig("vox_pattern"), md), "vox", 177
+            RepeatsProcessor(self.getConfig("repeats_pattern"), md),
+            "repeats",
+            178,
         )
 
         md.inlinePatterns.register(
-            SingerProcessor(self.getConfig("singer_pattern"), md), "singer", 177
+            VoxProcessor(self.getConfig("vox_pattern"), md),
+            "vox",
+            177,
         )
 
         md.inlinePatterns.register(
-            NotesProcessor(self.getConfig("notes_pattern"), md), "notes", 176
+            SingerProcessor(self.getConfig("singer_pattern"), md),
+            "singer",
+            177,
         )
 
         md.inlinePatterns.register(
-            RepeatsProcessor(self.getConfig("repeats_pattern"), md), "repeats", 178
-        )
-
-        md.inlinePatterns.register(
-            BarProcessor(self.getConfig("bar_pattern"), md), "bars", 179
+            NotesProcessor(self.getConfig("notes_pattern"), md),
+            "notes",
+            176,
         )
 
         # block processors
-        # md.parser.blockprocessors.register(BoxSectionProcessor(md.parser), 'box', '>empty')
-        # parser.blockprocessors.register(EmptyBlockProcessor(parser), 'empty', 100)
         md.parser.blockprocessors.register(BoxSectionProcessor(md.parser), "box", 95)
 
         # tree processors
-        # treeprocessors.register(InlineProcessor(md), 'inline', 20)
         md.treeprocessors.register(CollapseChildProcessor(md), "collapsediv", 15)
-
-        # postprocessing - clean up the final output
-        # md.postprocessors.register(VoxPostProcessor(md), "postvox", 90)
 
 
 def makeExtension(*args, **kwargs):

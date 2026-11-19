@@ -1,8 +1,17 @@
 # Changelog#
 
+## v2.2.3 - FEATURE
+- Add support for "bar markers"
+- reorder processors in code to reflect applied ordering
+- linting and reflowing
+
+4d06198 - Reorder processors to show priority, tidying and linting   (HEAD -> refs/heads/master, tag: refs/tags/v2.2.3)
+8a6fdff - migrate to modern pyproject format, add ruff.toml  
+5114267 - add support for bar separators and update example css
+
 ## v2.2.2 - FEATURE
 - add support for "singers notes"
-a37c56a - (HEAD -> master, origin/master, origin/HEAD) Add support for singers' instructions
+a37c56a -Add support for singers' instructions
 
 ## v2.2.1 - BUGFIX release
 
