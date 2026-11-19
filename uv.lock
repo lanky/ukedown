@@ -125,7 +125,7 @@ requires-dist = [{ name = "markdown", specifier = ">=3.11.3,<4.0.0" }]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "pytest", specifier = ">=9.2.0,<10.0.0" },
-    { name = "ruff", specifier = ">=0.17.5,<0.18.0" },
-    { name = "types-markdown", specifier = ">=3.7.0.20250322" },
+    { name = "pytest", specifier = ">=9.2.0" },
+    { name = "ruff", specifier = ">=0.17.5" },
+    { name = "types-markdown", specifier = ">=3.11.3.20261108" },
 ]
