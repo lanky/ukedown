@@ -2,23 +2,44 @@
 name = "ukedown"
 description = "Markdown extensions for songsheet creation"
 license = "GPL-3.0-or-later"
-version = "2.2.3"
+dynamic = ["version"]
+# version = "2.2.3"
 readme = "README.md"
 authors = [{ name = "Stuart Sears", email = "stuart@sjsears.com" }]
-requires-python = '>=3.11'
+requires-python = '>=3.11, <4.0'
 dependencies = ["markdown (>=3.11.3,<4.0.0)"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+]
 
 [project.urls]
-repository = "https://github.com/lanky/ukedown"
-"Bug Tracker" = "https://github.com/lanky/ukedown/issues"
+Repository = "https://github.com/lanky/ukedown"
+Issues = "https://github.com/lanky/ukedown/issues"
 
 [dependency-groups]
-dev = ["pytest (>=9.2.0,<10.0.0)", "ruff (>=0.17.5,<0.18.0)"]
+dev = [
+    "pytest (>=9.2.0,<10.0.0)",
+    "ruff (>=0.17.5,<0.18.0)",
+    "types-markdown (>=3.7.0.20250322)",
+]
 
-[tool.poetry]
-include = ["CHANGELOG.md", "LICENCE.txt"]
-requires-poetry = '>=2.2.1'
+[tool.uv]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[tool.uv-dynamic-versioning]
+vcs = "git"
+style = "semver"
+# pattern-prefix = "v"
