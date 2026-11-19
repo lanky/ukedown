@@ -5,15 +5,15 @@ license = "GPL-3.0-or-later"
 version = "2.2.3"
 readme = "README.md"
 authors = [{ name = "Stuart Sears", email = "stuart@sjsears.com" }]
-requires-python = '>=3.9'
-dependencies = ['markdown>=3.5.2,<4.0.0']
+requires-python = '>=3.11'
+dependencies = ["markdown (>=3.11.3,<4.0.0)"]
 
 [project.urls]
 repository = "https://github.com/lanky/ukedown"
 "Bug Tracker" = "https://github.com/lanky/ukedown/issues"
 
 [dependency-groups]
-dev = ['pytest>=8.0.1,<9.0.0', 'ruff>=0.2.2,<0.3.0']
+dev = ["pytest (>=9.2.0,<10.0.0)", "ruff (>=0.17.5,<0.18.0)"]
 
 [tool.poetry]
 include = ["CHANGELOG.md", "LICENCE.txt"]
